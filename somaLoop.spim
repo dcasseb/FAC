@@ -1,0 +1,53 @@
+# Program to read numbers until -1 is entered, then print their sum
+.data
+    prompt:     .asciiz "Enter a number (-1 to end): "
+    result_msg: .asciiz "\nThe sum is: "
+    newline:    .asciiz "\n"
+
+.text
+.globl main
+
+main:
+    # Initialize sum to 0
+    li $s0, 0       # $s0 will store our running sum
+    
+input_loop:
+    # Print prompt
+    li $v0, 4
+    la $a0, prompt
+    syscall
+    
+    # Read integer
+    li $v0, 5
+    syscall
+    move $t0, $v0   # Store input in $t0
+    
+    # Check if input is -1
+    li $t1, -1
+    beq $t0, $t1, print_result
+    
+    # Add input to sum
+    add $s0, $s0, $t0
+    
+    # Continue loop
+    j input_loop
+    
+print_result:
+    # Print result message
+    li $v0, 4
+    la $a0, result_msg
+    syscall
+    
+    # Print sum
+    li $v0, 1
+    move $a0, $s0
+    syscall
+    
+    # Print newline
+    li $v0, 4
+    la $a0, newline
+    syscall
+    
+    # Exit program
+    li $v0, 10
+    syscall

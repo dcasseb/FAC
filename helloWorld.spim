@@ -1,0 +1,14 @@
+.data           #dados a serem exibidos no programa
+    frase: .asciiz "Hello, World!\n"    #frase a ser exibida na tela
+
+.text           #seção de código (NÃO ESQUECER DE COLOCAR)
+.globl main     #ponto de entrada do programa
+
+main:           #início do programa
+
+    li $v0, 4           #a instrução para imprimir uma string na tela é passada de maneira imediata para o registrador de variável "v0"
+    la $a0, frase       #a string contida no endereço de memória de "frase" é passada para o registrador de argumento "a0"
+    syscall             #é feita a chamada no sistema para serem feitas as instruções
+
+    li $v0, 10          #a instrução para encerrar um programa é passada para o regitrador "v0", substituindo a informação anterior
+    syscall             #é feita a chamada no sistema para serem feitas as instruções
