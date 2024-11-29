@@ -1,6 +1,5 @@
 # Programa soma dois números
 .data
-    msg:   .asciiz "Resultado = "
     pula:   .asciiz "\n"
 
 .text
@@ -18,17 +17,12 @@
         syscall
         move $t1,$v0        
         
-        # soma os numeros
+        # subtrai os numeros
         sub $t2,$t0,$t1
-        
-        # imprime msg
-        li $v0,4
-        la $a0,msg
-        syscall
         
         # imprime resultado
         li $v0,1
-        move $a0,$t2
+        move $a0, $t2
         syscall
 
         #pula uma linha
