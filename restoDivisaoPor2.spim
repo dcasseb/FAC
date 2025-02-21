@@ -1,0 +1,36 @@
+.data
+    newline: .asciiz "\n"    # For output formatting
+
+.text
+main:
+    # Read n
+    li $v0, 5               # syscall code for read_int
+    syscall
+    move $t0, $v0           # $t0 = n
+
+    # Read i
+    li $v0, 5               # syscall code for read_int
+    syscall
+    move $t1, $v0           # $t1 = i
+
+    # Calculate 2^i using left shift (1 << i)
+    li $t2, 1               # $t2 = 1
+    sllv $t2, $t2, $t1      # $t2 = 2^i (shift 1 left by i bits)
+
+    # Calculate remainder using AND: n & (2^i - 1)
+    addi $t3, $t2, -1       # $t3 = 2^i - 1 (mask of i lower bits)
+    and $t4, $t0, $t3       # $t4 = n & (2^i - 1) = remainder
+
+    # Print result
+    move $a0, $t4           # move remainder to argument register
+    li $v0, 1               # syscall code for print_int
+    syscall
+
+    # Print newline
+    la $a0, newline         # load newline string
+    li $v0, 4               # syscall code for print_string
+    syscall
+
+    # Exit
+    li $v0, 10              # syscall code for exit
+    syscall

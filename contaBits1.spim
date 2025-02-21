@@ -1,0 +1,15 @@
+contaBits:
+    li $v0, 0          # initialize counter to 0
+    li $t0, 32         # total bits to check (32-bit integer)
+    move $t1, $a0      # copy input to $t1 for shifting
+
+loop:
+    beq $t0, $zero, end  # if checked all 32 bits, exit
+    andi $t2, $t1, 1     # get least significant bit (0 or 1)
+    add $v0, $v0, $t2    # add bit to counter
+    srl $t1, $t1, 1      # shift right by 1 to check next bit
+    addi $t0, $t0, -1    # decrement bit counter
+    j loop               # repeat
+
+end:
+    jr $ra              # return with count in $v0

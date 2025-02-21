@@ -1,0 +1,27 @@
+# Read i from input
+li $v0, 5          # syscall code for read_int
+syscall
+move $t0, $v0      # $t0 = i
+
+# Read j from input
+li $v0, 5          # syscall code for read_int
+syscall
+move $t1, $v0      # $t1 = j
+
+# Read N from input
+li $v0, 5          # syscall code for read_int
+syscall
+move $t2, $v0      # $t2 = N
+
+# Calculate memory offsets (multiply indices by 4 since integers are 4 bytes)
+sll $t0, $t0, 2    # $t0 = i * 4 (offset for A[i])
+sll $t1, $t1, 2    # $t1 = j * 4 (offset for A[j])
+
+# Calculate A[j] + N
+add $t3, $s0, $t1  # $t3 = address of A[j] (base + offset)
+lw $t4, 0($t3)     # $t4 = A[j]
+add $t5, $t4, $t2  # $t5 = A[j] + N
+
+# Store result in A[i]
+add $t6, $s0, $t0  # $t6 = address of A[i] (base + offset)
+sw $t5, 0($t6)     # A[i] = A[j] + N

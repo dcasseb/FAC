@@ -1,0 +1,15 @@
+    contaBits:
+        
+        move $v0,$zero #zerar o contador
+        
+        loop:
+            
+            beq,$a0,$zero,exit #$a0 = 0,exit
+
+            andi $t0,$a0,1
+            srl $a0,$a0,1
+            add $v0,$v0,$t0
+            j loop
+
+        exit:
+            j $ra

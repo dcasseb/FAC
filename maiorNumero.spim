@@ -1,0 +1,55 @@
+# Program to find the maximum of n numbers
+# Input: n (1 ≤ n ≤ 10^5) followed by n integers
+# Output: The maximum number among the n inputs
+
+.data
+    newline: .asciiz "\n"    # newline character for output
+
+.text
+main:
+    # Read n (number of integers to follow)
+    li   $v0, 5             # syscall code for read_int
+    syscall
+    move $t0, $v0           # $t0 = n
+
+    # Check if n >= 1 (per problem constraint)
+    blt  $t0, 1, end        # if n < 1, exit
+
+    # Read first number as initial maximum
+    li   $v0, 5             # syscall code for read_int
+    syscall
+    move $t1, $v0           # $t1 = current maximum
+    addi $t2, $t0, -1       # $t2 = remaining numbers to read (n-1)
+
+    # If n=1, skip loop
+    beq  $t2, $zero, print_result
+
+loop:
+    # Read next number
+    li   $v0, 5             # syscall code for read_int
+    syscall
+    move $t3, $v0           # $t3 = current number
+
+    # Update maximum if current number is larger
+    ble  $t3, $t1, skip_update  # if current <= max, skip
+    move $t1, $t3           # update maximum
+
+skip_update:
+    addi $t2, $t2, -1       # decrement counter
+    bgtz $t2, loop          # if counter > 0, continue loop
+
+print_result:
+    # Print the maximum
+    move $a0, $t1           # move maximum to argument register
+    li   $v0, 1             # syscall code for print_int
+    syscall
+
+    # Print newline
+    la   $a0, newline       # load address of newline
+    li   $v0, 4             # syscall code for print_string
+    syscall
+
+end:
+    # Exit program
+    li   $v0, 10            # syscall code for exit
+    syscall

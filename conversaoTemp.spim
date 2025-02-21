@@ -1,0 +1,74 @@
+.data
+    cinco: .double 5.0
+    nove: .double 9.0
+    trinta_e_dois: .double 32.0
+    kelvin: .double 273.15
+    origem_escala: .space 2
+    para_a_escala: .space 2
+    pula: .asciiz "\n"
+
+.text
+.globl main
+main:
+    li $v0, 12
+    syscall
+    sb $v0, origem_escala
+    
+    li $v0, 12
+    syscall
+    
+    li $v0, 12
+    syscall
+    sb $v0, para_a_escala
+    
+    li $v0, 12
+    syscall
+    
+    li $v0, 7
+    syscall
+    mov.d $f10, $f0
+
+    l.d $f6, cinco
+    l.d $f2, nove
+    l.d $f4, trinta_e_dois
+    l.d $f8, kelvin
+
+    lb $t0, origem_escala
+    lb $t1, para_a_escala
+    
+    beq $t0, 70, fahrenheit_para_celsius
+    beq $t0, 75, kelvin_para_celsius
+    j converter_de_celsius
+
+fahrenheit_para_celsius:
+    sub.d $f10, $f10, $f4
+    div.d $f16, $f6, $f2
+    mul.d $f10, $f10, $f16
+    j converter_de_celsius
+
+kelvin_para_celsius:
+    sub.d $f10, $f10, $f8
+    j converter_de_celsius
+
+converter_de_celsius:
+    beq $t1, 70, celsius_para_fahrenheit
+    beq $t1, 75, celsius_para_kelvin
+    j resultado
+
+celsius_para_fahrenheit:
+    div.d $f16, $f2, $f6
+    mul.d $f10, $f10, $f16
+    add.d $f10, $f10, $f4
+    j resultado
+
+celsius_para_kelvin:
+    add.d $f10, $f10, $f8
+
+resultado:
+    mov.d $f12, $f10
+    li $v0, 3
+    syscall
+
+encerrar:
+    li $v0, 10
+    syscall

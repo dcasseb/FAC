@@ -1,0 +1,90 @@
+.data
+    n: .word 0
+    X: .byte ' '
+    espaco: .byte ' '
+    Y: .byte ' '
+    nl: .asciiz "\n"
+
+.text
+    main:
+        # Ler o número de operações N
+        li $v0, 5
+        syscall
+        move $t3, $v0
+
+        # Inicializa o contador
+        li $s0, 0
+
+    loop:
+        # Condição de parada
+        beq $s0, $t3, exit
+
+        # Incrementa no contador
+        addi $s0, $s0, 1
+
+        # Zerar a soma
+        move $t4, $zero
+        move $t1, $zero
+        move $t2, $zero
+
+        # Ler o X
+        li $v0, 12         # Chamar a syscall para ler um caractere
+        syscall
+        sb $v0, X          # Salvar o caractere em X
+
+        # Ler o espaco
+        li $v0, 12         # Chamar a syscall para ler um caractere
+        syscall
+        sb $v0, espaco     # Salvar o caractere em 'espaco'
+
+        # Ler o Y
+        li $v0, 12         # Chamar a syscall para ler um caractere
+        syscall
+        sb $v0, Y          # Salvar o caractere em 'Y'
+
+        # Limpar buffer do teclado
+        li $v0, 12         # Chamar a syscall para limpar o buffer do teclado
+        syscall
+
+        # Converter X e Y para inteiros
+        li $t0, 48         # Carregar o valor ASCII de '0'
+        lb $t1, X          # Carregar o caractere X em $t1
+        sub $t1, $t1, $t0  # Subtrair o valor ASCII de '0'
+        lb $t2, Y          # Carregar o caractere Y em $t2
+        sub $t2, $t2, $t0  # Subtrair o valor ASCII de '0'
+
+        # Soma os dois numeros
+        add $t4, $t1, $t2
+
+        # Se a soma der 3, o XOR é verdadeiro
+        beq $t4, 3, verdadeiro
+
+        # Imprimi o 1
+        li $v0, 1
+        li $a0, 1
+        syscall
+        
+        # Imprime uma nova linha
+        li $v0, 4               # Chama a syscall para imprimir uma string
+        la $a0, nl              # Carrega o endereço da string de nova linha
+        syscall
+
+        j loop
+
+    verdadeiro:
+        # Imprimi o 2
+        li $v0, 1
+        li $a0, 2
+        syscall
+        
+        # Imprime uma nova linha
+        li $v0, 4               # Chama a syscall para imprimir uma string
+        la $a0, nl              # Carrega o endereço da string de nova linha
+        syscall
+
+        j loop
+
+    exit:
+        # Finalizar o programa
+        li $v0, 10         # Chamar a syscall para terminar o programa
+        syscall

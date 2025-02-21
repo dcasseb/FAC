@@ -5,7 +5,7 @@
 # Returns:
 #   $v0 - number of distinct elements
 
-elembistintos:
+elemDistintos:
     # If array is empty or has 1 element, handle base cases
     beq $a1, $zero, return_zero  # if length = 0, return 0
     li  $v0, 1                  # if length >= 1, at least 1 distinct element

@@ -1,0 +1,151 @@
+.data
+    MAX_AERO:   .word 100
+    a:          .word 0
+    v:          .word 0
+    c:          .word 0
+    max:        .word 0
+    k:          .word 1
+    o:          .word 0
+    d:          .word 0
+    ma:         .space 400 # 4 * MAX_AERO
+
+    nl:         .asciiz "\n"
+    prompt:     .asciiz "Teste "
+    space:      .asciiz " "
+
+.text
+main:
+    # Loop principal
+    main_loop:
+        # Leitura de a e v
+        li $v0, 5
+        syscall
+        sw $v0, a
+
+        li $v0, 5
+        syscall
+        sw $v0, v
+
+        # Verifica condição de saída
+        lw $t7, v
+        beqz $t7, end_program
+        lw $t8, a
+        beqz $t8, end_program
+
+        # Inicializa o array ma com zeros
+        la $t0, ma
+        la $t1, MAX_AERO
+        li $t2, 0
+
+        init_loop:
+            sw $t2, 0($t0)
+            addi $t0, $t0, 4
+            blt $t0, $t1, init_loop
+
+        # Loop de leitura dos voos
+        la $t0, v
+        lw $t1, v
+
+        read_loop:
+            li $v0, 5
+            syscall
+            sw $v0, o
+
+            li $v0, 5
+            syscall
+            sw $v0, d
+
+            # Leitura dos pares o e d
+            lw $t3, o
+            lw $t4, d
+
+            # Incrementa contadores em ma
+            lw $t5, ma($t3)
+            lw $t6, ma($t4)
+
+            addi $t5, $t5, 1
+            addi $t6, $t6, 1
+
+            sw $t5, ma($t3)
+            sw $t6, ma($t4)
+
+            # Verifica e atualiza max
+            lw $t7, max
+            bge $t5, $t7, update_max
+            bge $t6, $t7, update_max
+
+            j read_loop
+
+        update_max:
+            bge $t5, $t6, set_max_t5
+            j set_max_t6
+
+        set_max_t5:
+            sw $t5, max
+            j read_loop
+
+        set_max_t6:
+            sw $t6, max
+            j read_loop
+
+        # Imprime "Teste k"
+        li $v0, 4
+        la $a0, prompt
+        syscall
+
+        lw $t9, k
+        li $v0, 1
+        lw $a0, k
+        syscall
+
+        li $v0, 4
+        la $a0, nl
+        syscall
+
+       # Imprime os aeroportos com maior quantidade
+    la $t0, a
+    lw $t1, a
+
+    li $t2, 0  # Adicione esta linha para inicializar t2
+
+print_loop:
+    bge $t2, $t1, print_end
+
+    lw $t3, ma($t2)
+    lw $t4, max
+
+    beq $t3, $t4, print_aeroporto
+
+    j print_next
+
+print_aeroporto:
+    li $v0, 1
+    lw $a0, t2
+    syscall
+
+    li $v0, 4
+    la $a0, space
+    syscall
+
+print_next:
+    addi $t2, $t2, 1
+    j print_loop
+
+print_end:
+
+li $v0, 4
+la $a0, nl
+syscall
+
+
+        # Incrementa k
+        lw $t9, k
+        addi $t9, $t9, 1
+        sw $t9, k
+
+        j main_loop
+
+    end_program:
+        # Fim do programa
+        li $v0, 10
+        syscall

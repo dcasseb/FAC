@@ -1,0 +1,40 @@
+.data
+.text
+    main:
+    #ler o numero D
+        li $v0,5    #$v0 = 5
+        syscall
+        move $t0, $v0   #$t0 = $v0
+        #D = $t0
+    
+    #ler o numero A
+        li $v0,5    #$v0 = 5
+        syscall
+        move $t1, $v0   #$t1 = $v0
+        #A = $t1
+
+    #ler o numero N
+        li $v0,5    #$v0 = 5
+        syscall
+        move $t2, $v0   #$t2 = $v0
+        #N = $t2
+    
+    #calcular o D+(N-1)*A
+        addi $t6,1 #$t6 = 1
+        sub $t3,$t2,$t6 #$t3 = $t2-$t6 (N-1)
+        mul $a0,$t3,$t1 #$a0 = $t3*$t1 ((N-1)*A)
+        add $a0,$a0,$t0 #$a0 = $a0 + $t0 ((N-1)*A + D)
+    
+    #calcular (D + ((N-1)*A)*(32-N))
+        addi $t7,32 #$t7 = 32
+        sub $t4,$t7,$t2 #$t4 = $t7 - $t2 (32-N)
+        mul $a1,$t4,$a0 #$a1 = $t4 * $a0
+        move $a0,$a1 #$a0 = $a1 
+    
+    #imprimir o resultado
+        li $v0,1
+        syscall
+    
+    #encerra o programa
+        li $v0,10
+        syscall
