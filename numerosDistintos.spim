@@ -1,0 +1,40 @@
+# Procedure: elembistintos
+# Arguments:
+#   $a0 - base address of the sorted integer array
+#   $a1 - number of elements in the array
+# Returns:
+#   $v0 - number of distinct elements
+
+elembistintos:
+    # If array is empty or has 1 element, handle base cases
+    beq $a1, $zero, return_zero  # if length = 0, return 0
+    li  $v0, 1                  # if length >= 1, at least 1 distinct element
+    beq $a1, 1, end             # if length = 1, return 1
+
+    # Initialize counters and pointers
+    li  $t0, 1                  # $t0: count of distinct elements (start with 1)
+    lw  $t1, 0($a0)            # $t1: previous element (first element initially)
+    addi $t2, $a0, 4           # $t2: pointer to current element (second element)
+    addi $t3, $a1, -1          # $t3: number of comparisons needed (n-1)
+
+loop:
+    beq $t3, $zero, end_loop   # if no more comparisons needed, exit
+    lw  $t4, 0($t2)            # load current element
+    beq $t4, $t1, skip         # if current = previous, skip (not distinct)
+    addi $t0, $t0, 1           # increment distinct count
+    move $t1, $t4              # update previous element to current
+
+skip:
+    addi $t2, $t2, 4           # move to next element
+    addi $t3, $t3, -1          # decrement comparison counter
+    j    loop                  # continue loop
+
+end_loop:
+    move $v0, $t0              # move final count to return register
+
+end:
+    jr  $ra                    # return to caller
+
+return_zero:
+    li  $v0, 0                 # return 0 for empty array
+    jr  $ra                    # return to caller

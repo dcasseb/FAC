@@ -1,0 +1,24 @@
+#código que faz subtração entre dois inteiros
+.data
+.text
+main:
+#ler o primeiro numero
+    li $v0,5    #$v0 = 5
+    syscall
+    move $t1, $v0   #$t1 = $v0
+
+#ler o segundo numero
+    li $v0,5    #$v0 = 5
+    syscall
+    move $t2, $v0   #$t2 = $v0
+
+#Calculo A-B
+    sub	$a0, $t1, $t2   # $a0 = $t1 - $t2
+
+#imprimir o resultado
+    li $v0,1
+    syscall
+
+#encerra o programa
+    li $v0,10
+    syscall
